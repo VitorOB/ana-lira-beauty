@@ -1,0 +1,217 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ Paleta
+   Champagne & Vinho. Use nas classes como bg-cream, text-wine, border-rose... */
+@theme {
+  --color-cream: #f8f1ea; /* fundo */
+  --color-blush: #f1e3da; /* fundo alternativo das seções */
+  --color-ink: #2a1518; /* texto */
+  --color-muted: #6e5357; /* texto secundário */
+  --color-wine: #5b1e2d; /* cor principal */
+  --color-wine-dark: #48151f;
+  --color-rose: #ebc9c3; /* rosé suave */
+  --color-gold: #b98f5a; /* dourado de detalhe */
+  --color-on-wine: #f8ede6; /* texto sobre vinho */
+  --color-whats: #1e8a52; /* WhatsApp */
+  --color-whats-dark: #17703f;
+  --color-error: #b42318;
+
+  --font-serif: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-section: 64px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream font-sans text-ink antialiased;
+    font-weight: 400;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-normal;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  /* Palavras de destaque dos títulos */
+  h1 em,
+  h2 em,
+  h3 em {
+    @apply text-wine italic;
+  }
+  ::selection {
+    @apply bg-rose text-wine;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-wine);
+    outline-offset: 3px;
+  }
+  section[id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* --------------------------------------------------------------- Animações */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* A mancha "muda de forma" só com transform (gira e estica em X/Y),
+   o que roda na GPU e não pesa no Lighthouse. */
+/* Título principal: sobe saindo do desfoque. Não parte de opacidade 0
+   para o navegador já contar o título como exibido (melhor LCP no Lighthouse). */
+@keyframes rise-soft {
+  from {
+    opacity: 0.25;
+    filter: blur(10px);
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+@keyframes blob {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1, 1);
+  }
+  33% {
+    transform: rotate(14deg) scale(1.07, 0.95);
+  }
+  66% {
+    transform: rotate(-10deg) scale(0.95, 1.06);
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(48px) scale(0.98);
+  }
+}
+
+/* Entrada em sequência dos textos do topo (use style={{ '--d': '200ms' }}) */
+.animate-rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.animate-rise-soft {
+  animation: rise-soft 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.animate-blob {
+  border-radius: 58% 42% 38% 62% / 46% 56% 44% 54%;
+  animation: blob 14s ease-in-out infinite;
+  will-change: transform;
+}
+.glow {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-rose) 55%, transparent), transparent);
+}
+.animate-spin-slow {
+  animation: spin-slow 22s linear infinite;
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+.animate-slide-up {
+  animation: slide-up 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--color-whats);
+  animation: pulse-ring 2.4s ease-out infinite;
+  z-index: -1;
+}
+.pulse-ring::after {
+  animation-delay: 1.2s;
+}
+
+/* Seções que aparecem ao rolar (fade + subida) */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Esconde a barra de rolagem do carrossel */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ----------------------------------------------- Acessibilidade: menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .pulse-ring::before,
+  .pulse-ring::after {
+    display: none;
+  }
+}
