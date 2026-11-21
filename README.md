@@ -1,5 +1,7 @@
 # Ana Lira Beauty — site one page para maquiadora de noivas
 
+**🔗 Site no ar: [ana-lira-beauty.vercel.app](https://ana-lira-beauty.vercel.app/)**
+
 Modelo de site em uma página que transforma visitante em noiva qualificada no WhatsApp.
 React + TypeScript + Vite + Tailwind CSS 4. Todo o conteúdo fica em **`src/config/site.ts`**.
 
