@@ -1,13 +1,12 @@
 import { useId, useState } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import { PlusIcon } from './ui/Icons'
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
 
-const { faq } = site
-
 export default function Faq() {
+  const { faq } = useSite().site
   const [open, setOpen] = useState<number | null>(0)
   const baseId = useId()
 

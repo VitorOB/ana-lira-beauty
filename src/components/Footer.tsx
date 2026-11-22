@@ -1,9 +1,10 @@
-import { site } from '../config/site'
 import { useBooking } from '../context/BookingContext'
+import { useSite } from '../i18n/lang'
 import { InstagramIcon, PinIcon, WhatsAppIcon } from './ui/Icons'
 
 export default function Footer() {
   const { openBooking } = useBooking()
+  const { site, t } = useSite()
   const { brand, contact, location, footer } = site
 
   return (
@@ -17,12 +18,23 @@ export default function Footer() {
 
           <ul className="grid gap-3 text-[15px]">
             <li>
-              <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 rounded-full transition-colors hover:text-rose">
-                <span className="grid size-10 place-items-center rounded-full bg-on-wine/10">
-                  <InstagramIcon className="size-5" />
+              {contact.instagramUrl ? (
+                <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 rounded-full transition-colors hover:text-rose">
+                  <span className="grid size-10 place-items-center rounded-full bg-on-wine/10">
+                    <InstagramIcon className="size-5" />
+                  </span>
+                  @{contact.instagram}
+                </a>
+              ) : (
+                // Sem usuário configurado (site de demonstração): só texto, sem link para nenhuma conta.
+                <span className="inline-flex items-center gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-on-wine/10">
+                    <InstagramIcon className="size-5" />
+                  </span>
+                  Instagram
+                  <span className="rounded-full bg-on-wine/15 px-2.5 py-0.5 text-xs tracking-[0.08em] uppercase">{t.demo}</span>
                 </span>
-                @{contact.instagram}
-              </a>
+              )}
             </li>
             <li>
               <button type="button" onClick={() => openBooking()} aria-haspopup="dialog" className="inline-flex items-center gap-3 rounded-full transition-colors hover:text-rose">
@@ -36,14 +48,14 @@ export default function Footer() {
               <span className="grid size-10 place-items-center rounded-full bg-on-wine/10">
                 <PinIcon className="size-5" />
               </span>
-              Atendimento em {location.region}
+              {t.servingIn(location.region)}
             </li>
           </ul>
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-on-wine/15 pt-6 text-sm text-on-wine/75 sm:flex-row">
           <p>
-            © <span suppressHydrationWarning>{new Date().getFullYear()}</span> {brand.name}. Todos os direitos reservados.
+            © <span suppressHydrationWarning>{new Date().getFullYear()}</span> {brand.name}. {t.rights}
           </p>
           <p>
             {footer.credit.label}{' '}

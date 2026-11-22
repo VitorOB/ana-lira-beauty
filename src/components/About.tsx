@@ -1,12 +1,12 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import Img from './ui/Img'
 import Reveal from './ui/Reveal'
 import RichText from './ui/RichText'
 
-const { about } = site
-
 export default function About() {
+  const { site, t } = useSite()
+  const { about } = site
   return (
     <section id="sobre" aria-labelledby="sobre-title" className="px-3 py-10 sm:px-6 sm:py-16">
       <div className="mx-auto grid max-w-6xl items-center gap-14 rounded-section bg-blush px-6 py-16 sm:px-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16 lg:px-16 lg:py-20">
@@ -53,7 +53,7 @@ export default function About() {
           </Reveal>
 
           <Reveal delay={200}>
-            <ul className="mt-7 flex flex-wrap gap-2" aria-label="Estilo de trabalho">
+            <ul className="mt-7 flex flex-wrap gap-2" aria-label={t.styleTagsLabel}>
               {about.styleTags.map((tag) => (
                 <li key={tag} className="rounded-full border border-wine/15 bg-white/60 px-4 py-2 text-[15px] text-ink">
                   {tag}

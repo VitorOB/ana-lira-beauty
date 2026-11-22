@@ -1,10 +1,11 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import { useBooking } from '../context/BookingContext'
 import { WhatsAppIcon } from './ui/Icons'
 
 /** Botão flutuante com pulso. Abre o mesmo formulário de disponibilidade. */
 export default function WhatsAppFloat() {
   const { openBooking, isOpen } = useBooking()
+  const { site } = useSite()
   if (isOpen) return null
 
   return (

@@ -1,15 +1,15 @@
 import type { CSSProperties } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import { HERO_IMAGE } from '../lib/image'
 import BookingButton from './ui/BookingButton'
 import Img from './ui/Img'
 import RichText from './ui/RichText'
 
-const { hero } = site
 const delay = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties
 
 /** Selo circular girando com texto em volta. */
 function RotatingSeal() {
+  const { hero, brand } = useSite().site
   return (
     <div className="absolute -top-4 -right-2 z-20 size-28 sm:-right-6 sm:size-32" aria-hidden>
       <div className="grid size-full place-items-center rounded-full bg-cream/90 shadow-[0_10px_30px_-12px_rgba(42,21,24,0.35)] backdrop-blur">
@@ -23,13 +23,14 @@ function RotatingSeal() {
             </textPath>
           </text>
         </svg>
-        <span className="font-serif text-3xl text-wine italic">{site.brand.initials}</span>
+        <span className="font-serif text-3xl text-wine italic">{brand.initials}</span>
       </div>
     </div>
   )
 }
 
 export default function Hero() {
+  const { hero } = useSite().site
   return (
     <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden pt-28 pb-16 sm:pt-36 lg:pb-24">
       {/* brilho de fundo */}

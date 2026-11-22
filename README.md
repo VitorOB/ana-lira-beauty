@@ -35,7 +35,7 @@ pelo site inteiro (títulos, SEO, textos, schema.org e mensagem do WhatsApp):
 | `REGION`           | Texto da área atendida (padrão: "Cidade e região")   |
 | `WHATSAPP`         | Número só com dígitos: DDI + DDD + número            |
 | `WHATSAPP_DISPLAY` | Número formatado que aparece no rodapé               |
-| `INSTAGRAM`        | Usuário do Instagram, sem @                          |
+| `INSTAGRAM`        | Usuário do Instagram, sem @. Vazio = "Instagram · demonstrativo" sem link (use vazio no site de demonstração) |
 | `SITE_URL`         | Domínio final, sem barra no fim (canonical, OG, sitemap) |
 | `NEXT_SEASON`      | Ano da próxima temporada ("Agenda 2027 aberta")      |
 

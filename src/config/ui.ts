@@ -1,0 +1,148 @@
+/** Textos fixos da interface (fora do site.ts), em português e inglês. */
+
+export type Lang = 'pt' | 'en'
+
+const pt = {
+  skipLink: 'Pular para o conteúdo',
+  // Cabeçalho
+  mainNav: 'Principal',
+  checkDate: 'Consultar data',
+  checkAvailability: 'Consultar disponibilidade',
+  openMenu: 'Abrir menu',
+  closeMenu: 'Fechar menu',
+  // Seções
+  styleTagsLabel: 'Estilo de trabalho',
+  step: (n: number) => `Passo ${n}`,
+  filterLabel: 'Filtrar portfólio por categoria',
+  enlargePhoto: (alt: string) => `Ampliar foto: ${alt}`,
+  // Lightbox
+  photoOf: (i: number, total: number, alt: string) => `Foto ${i} de ${total}: ${alt}`,
+  closePhoto: 'Fechar foto',
+  prevPhoto: 'Foto anterior',
+  nextPhoto: 'Próxima foto',
+  // Depoimentos
+  carousel: 'carrossel',
+  testimonial: 'depoimento',
+  testimonialsLabel: 'Depoimentos de noivas',
+  position: (i: number, total: number) => `${i} de ${total}`,
+  prevTestimonial: 'Depoimento anterior',
+  nextTestimonial: 'Próximo depoimento',
+  seeTestimonial: (name: string) => `Ver depoimento de ${name}`,
+  // Rodapé
+  rights: 'Todos os direitos reservados.',
+  servingIn: (region: string) => `Atendimento em ${region}`,
+  demo: 'demonstrativo',
+  // Formulário
+  form: {
+    close: 'Fechar formulário',
+    name: 'Nome',
+    namePlaceholder: 'Seu nome completo',
+    date: 'Data do casamento',
+    city: 'Cidade do evento',
+    cityPlaceholder: (city: string) => `Ex.: ${city}`,
+    attendance: 'Tipo de atendimento',
+    package: 'Pacote de interesse',
+    selectPackage: 'Selecione um pacote',
+    notes: 'Observações',
+    optional: '(opcional)',
+    notesPlaceholder: 'Horário da cerimônia, número de madrinhas, local do making of...',
+    privacy: 'Seus dados são usados apenas para responder à sua consulta.',
+    reopen: 'Abrir o WhatsApp novamente',
+    back: 'Voltar ao site',
+  },
+  /** Rótulos da mensagem que chega no WhatsApp. */
+  message: {
+    name: 'Nome',
+    date: 'Data do casamento',
+    city: 'Cidade',
+    attendance: 'Atendimento',
+    package: 'Pacote',
+    notes: 'Observações',
+  },
+  /** Mensagens de erro do formulário. */
+  errors: {
+    nameRequired: 'Informe seu nome.',
+    invalidChars: 'Use apenas letras, espaço, apóstrofo ou hífen.',
+    nameShort: 'O nome precisa ter pelo menos 3 letras.',
+    tooLong: (max: number) => `Use no máximo ${max} caracteres.`,
+    dateRequired: 'Escolha a data do casamento.',
+    dateInvalid: 'Informe uma data válida.',
+    datePast: 'A data não pode ser anterior a hoje.',
+    cityRequired: 'Informe a cidade do evento.',
+    cityShort: 'A cidade precisa ter pelo menos 2 letras.',
+    attendanceRequired: 'Selecione o tipo de atendimento.',
+    packageRequired: 'Selecione um pacote (ou "ainda não decidi").',
+  },
+  /** Botão de idioma: mostra o idioma de destino. */
+  langSwitch: { short: 'EN', label: 'View in English', target: 'en' as Lang },
+}
+
+export type UiText = typeof pt
+
+const en: UiText = {
+  skipLink: 'Skip to content',
+  mainNav: 'Main',
+  checkDate: 'Check date',
+  checkAvailability: 'Check availability',
+  openMenu: 'Open menu',
+  closeMenu: 'Close menu',
+  styleTagsLabel: 'Work style',
+  step: (n: number) => `Step ${n}`,
+  filterLabel: 'Filter portfolio by category',
+  enlargePhoto: (alt: string) => `Enlarge photo: ${alt}`,
+  photoOf: (i: number, total: number, alt: string) => `Photo ${i} of ${total}: ${alt}`,
+  closePhoto: 'Close photo',
+  prevPhoto: 'Previous photo',
+  nextPhoto: 'Next photo',
+  carousel: 'carousel',
+  testimonial: 'testimonial',
+  testimonialsLabel: 'Brides’ testimonials',
+  position: (i: number, total: number) => `${i} of ${total}`,
+  prevTestimonial: 'Previous testimonial',
+  nextTestimonial: 'Next testimonial',
+  seeTestimonial: (name: string) => `See ${name}’s testimonial`,
+  rights: 'All rights reserved.',
+  servingIn: (region: string) => `Serving ${region}`,
+  demo: 'demo',
+  form: {
+    close: 'Close form',
+    name: 'Name',
+    namePlaceholder: 'Your full name',
+    date: 'Wedding date',
+    city: 'Event city',
+    cityPlaceholder: (city: string) => `e.g. ${city}`,
+    attendance: 'Type of service',
+    package: 'Package of interest',
+    selectPackage: 'Select a package',
+    notes: 'Notes',
+    optional: '(optional)',
+    notesPlaceholder: 'Ceremony time, number of bridesmaids, where you’ll get ready...',
+    privacy: 'Your details are only used to reply to your request.',
+    reopen: 'Open WhatsApp again',
+    back: 'Back to the website',
+  },
+  message: {
+    name: 'Name',
+    date: 'Wedding date',
+    city: 'City',
+    attendance: 'Service',
+    package: 'Package',
+    notes: 'Notes',
+  },
+  errors: {
+    nameRequired: 'Please enter your name.',
+    invalidChars: 'Use only letters, spaces, apostrophes or hyphens.',
+    nameShort: 'Your name must have at least 3 letters.',
+    tooLong: (max: number) => `Use at most ${max} characters.`,
+    dateRequired: 'Choose the wedding date.',
+    dateInvalid: 'Enter a valid date.',
+    datePast: 'The date can’t be earlier than today.',
+    cityRequired: 'Enter the event city.',
+    cityShort: 'The city must have at least 2 letters.',
+    attendanceRequired: 'Select the type of service.',
+    packageRequired: 'Select a package (or “I haven’t decided yet”).',
+  },
+  langSwitch: { short: 'PT', label: 'Ver em português', target: 'pt' },
+}
+
+export const ui = { pt, en }

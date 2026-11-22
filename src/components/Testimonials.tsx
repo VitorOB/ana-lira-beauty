@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import { ArrowIcon } from './ui/Icons'
 import Img from './ui/Img'
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
 
-const { testimonials } = site
 const ROTATIONS = ['-rotate-2', 'rotate-[1.5deg]', '-rotate-1', 'rotate-2']
 
 export default function Testimonials() {
+  // `ui` (e não `t`): dentro dos .map, `t` é cada depoimento.
+  const { site, t: ui } = useSite()
+  const { testimonials } = site
   const trackRef = useRef<HTMLUListElement>(null)
   const [active, setActive] = useState(0)
   const total = testimonials.items.length
@@ -54,15 +56,15 @@ export default function Testimonials() {
         <Reveal>
           <ul
             ref={trackRef}
-            aria-roledescription="carrossel"
-            aria-label="Depoimentos de noivas"
+            aria-roledescription={ui.carousel}
+            aria-label={ui.testimonialsLabel}
             className="no-scrollbar mt-12 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-6 px-6 py-8 sm:px-10 lg:px-[calc((100%-3*340px-2*24px)/2)]"
           >
             {testimonials.items.map((t, i) => (
               <li
                 key={t.name}
-                aria-roledescription="depoimento"
-                aria-label={`${i + 1} de ${total}`}
+                aria-roledescription={ui.testimonial}
+                aria-label={ui.position(i + 1, total)}
                 className={`w-[min(85vw,340px)] shrink-0 snap-center ${ROTATIONS[i % ROTATIONS.length]} transition-transform duration-500 hover:rotate-0`}
               >
                 <figure className="flex h-full flex-col rounded-[40px] bg-cream p-7 shadow-[0_24px_50px_-34px_rgba(42,21,24,0.55)] transition duration-500 hover:-translate-y-2">
@@ -90,7 +92,7 @@ export default function Testimonials() {
             onClick={() => goTo(Math.max(0, active - 1))}
             disabled={active === 0}
             className="grid size-12 place-items-center rounded-full border border-wine/20 text-wine transition hover:bg-wine hover:text-on-wine disabled:pointer-events-none disabled:opacity-35"
-            aria-label="Depoimento anterior"
+            aria-label={ui.prevTestimonial}
           >
             <ArrowIcon direction="left" className="size-5" />
           </button>
@@ -100,7 +102,7 @@ export default function Testimonials() {
                 key={t.name}
                 type="button"
                 onClick={() => goTo(i)}
-                aria-label={`Ver depoimento de ${t.name}`}
+                aria-label={ui.seeTestimonial(t.name)}
                 aria-current={active === i}
                 className="grid size-6 place-items-center"
               >
@@ -113,7 +115,7 @@ export default function Testimonials() {
             onClick={() => goTo(Math.min(total - 1, active + 1))}
             disabled={active === total - 1}
             className="grid size-12 place-items-center rounded-full border border-wine/20 text-wine transition hover:bg-wine hover:text-on-wine disabled:pointer-events-none disabled:opacity-35"
-            aria-label="Próximo depoimento"
+            aria-label={ui.nextTestimonial}
           >
             <ArrowIcon className="size-5" />
           </button>

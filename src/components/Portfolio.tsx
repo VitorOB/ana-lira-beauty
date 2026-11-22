@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import Lightbox from './Lightbox'
 import BookingButton from './ui/BookingButton'
 import Img from './ui/Img'
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
-
-const { portfolio } = site
 
 /** Formatos que se alternam na galeria: arco, círculo e cantos alternados. */
 const SHAPES = [
@@ -19,12 +17,15 @@ const SHAPES = [
 ]
 
 export default function Portfolio() {
-  const [filter, setFilter] = useState<string>(portfolio.allLabel)
+  const { site, t } = useSite()
+  const { portfolio } = site
+  // Guarda a posição do filtro (0 = todos), não o nome: assim a troca de idioma mantém a escolha.
+  const [filter, setFilter] = useState(0)
   const [lightbox, setLightbox] = useState<number | null>(null)
 
   const items = useMemo(
-    () => (filter === portfolio.allLabel ? portfolio.items : portfolio.items.filter((i) => i.category === filter)),
-    [filter],
+    () => (filter === 0 ? portfolio.items : portfolio.items.filter((i) => i.category === portfolio.categories[filter - 1])),
+    [filter, portfolio],
   )
   const filters = [portfolio.allLabel, ...portfolio.categories]
   const closeLightbox = useCallback(() => setLightbox(null), [])
@@ -35,15 +36,15 @@ export default function Portfolio() {
         <SectionHeading id="portfolio-title" eyebrow={portfolio.eyebrow} title={portfolio.title} subtitle={portfolio.subtitle} />
 
         <Reveal className="mt-10 flex justify-center">
-          <div role="group" aria-label="Filtrar portfólio por categoria" className="flex flex-wrap justify-center gap-2 rounded-full bg-blush p-1.5">
-            {filters.map((f) => (
+          <div role="group" aria-label={t.filterLabel} className="flex flex-wrap justify-center gap-2 rounded-full bg-blush p-1.5">
+            {filters.map((f, fi) => (
               <button
-                key={f}
+                key={fi}
                 type="button"
-                aria-pressed={filter === f}
-                onClick={() => setFilter(f)}
+                aria-pressed={filter === fi}
+                onClick={() => setFilter(fi)}
                 className={`rounded-full px-5 py-2.5 text-[15px] font-medium transition-colors ${
-                  filter === f ? 'bg-wine text-on-wine shadow-md' : 'text-muted hover:text-wine'
+                  filter === fi ? 'bg-wine text-on-wine shadow-md' : 'text-muted hover:text-wine'
                 }`}
               >
                 {f}
@@ -62,7 +63,7 @@ export default function Portfolio() {
                     type="button"
                     onClick={() => setLightbox(i)}
                     className={`group relative block w-full overflow-hidden bg-blush ${shape.className}`}
-                    aria-label={`Ampliar foto: ${item.alt}`}
+                    aria-label={t.enlargePhoto(item.alt)}
                   >
                     <Img
                       src={item.src}

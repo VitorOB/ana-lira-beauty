@@ -19,12 +19,19 @@ const STATE = 'SP'
 const REGION = `${CITY} e região`
 const WHATSAPP = '5511999999999' // DDI + DDD + número, só números
 const WHATSAPP_DISPLAY = '(11) 99999-9999'
-const INSTAGRAM = 'analirabeauty' // sem o @
+/**
+ * Usuário do Instagram, sem o @. Vazio = o rodapé mostra "Instagram · demonstrativo" sem link.
+ * Em site de demonstração, deixe vazio: qualquer @ inventado pode ser a conta de alguém real.
+ */
+const INSTAGRAM = ''
 const SITE_URL = 'https://ana-lira-beauty.vercel.app' // domínio final, sem barra no fim
 const NEXT_SEASON = '2027'
 
+/** Constantes reaproveitadas pela versão em inglês (site.en.ts). */
+export const constants = { BRAND, PROFESSIONAL, CITY, STATE, NEXT_SEASON }
+
 /** Monta a URL de uma foto do Unsplash pelo ID (o site adiciona o tamanho sozinho). */
-const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}`
+export const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}`
 
 export const site = {
   brand: { name: BRAND, professional: PROFESSIONAL, initials: INITIALS },
@@ -33,7 +40,7 @@ export const site = {
     whatsapp: WHATSAPP,
     whatsappDisplay: WHATSAPP_DISPLAY,
     instagram: INSTAGRAM,
-    instagramUrl: `https://instagram.com/${INSTAGRAM}`,
+    instagramUrl: INSTAGRAM ? `https://instagram.com/${INSTAGRAM}` : '',
   },
 
   location: { city: CITY, state: STATE, region: REGION },

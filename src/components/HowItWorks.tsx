@@ -1,11 +1,11 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
 
-const { steps } = site
-
 export default function HowItWorks() {
+  const { site, t } = useSite()
+  const { steps } = site
   return (
     <section id="como-funciona" aria-labelledby="como-funciona-title" className="px-5 py-20 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
@@ -19,7 +19,7 @@ export default function HowItWorks() {
               <Reveal delay={i * 120}>
                 <div className="relative mx-auto grid size-20 place-items-center rounded-full bg-rose font-serif text-3xl text-wine ring-8 ring-cream transition-transform duration-500 hover:-translate-y-1.5">
                   <span aria-hidden>{String(i + 1).padStart(2, '0')}</span>
-                  <span className="sr-only">Passo {i + 1}</span>
+                  <span className="sr-only">{t.step(i + 1)}</span>
                 </div>
                 <h3 className="mt-6 text-2xl">{step.title}</h3>
                 <p className="mx-auto mt-3 max-w-64 leading-relaxed text-muted">{step.text}</p>

@@ -2,6 +2,9 @@
  * Regras do formulário de disponibilidade.
  * Nome e cidade: só letras (com acento), espaço, apóstrofo e hífen.
  */
+import type { Lang, UiText } from '../config/ui'
+
+type ErrorMessages = UiText['errors']
 
 export const NAME_MAX = 60
 export const CITY_MAX = 60
@@ -36,10 +39,15 @@ export function todayISO(): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
-/** AAAA-MM-DD → DD/MM/AAAA */
-export function formatDateBR(iso: string): string {
+/**
+ * Data para a mensagem do WhatsApp.
+ * Português: AAAA-MM-DD → DD/MM/AAAA. Inglês: por extenso ("June 12, 2027"),
+ * para não haver confusão entre dia/mês e mês/dia.
+ */
+export function formatDate(iso: string, lang: Lang): string {
   const [y, m, d] = iso.split('-')
-  return `${d}/${m}/${y}`
+  if (lang === 'pt') return `${d}/${m}/${y}`
+  return new Date(Date.UTC(+y, +m - 1, +d)).toLocaleDateString('en-US', { dateStyle: 'long', timeZone: 'UTC' })
 }
 
 export interface BookingForm {
@@ -53,41 +61,42 @@ export interface BookingForm {
 
 export type BookingErrors = Partial<Record<keyof BookingForm, string>>
 
-export function validateField(field: keyof BookingForm, raw: string): string | undefined {
+/** `msg` são as mensagens de erro do idioma atual (ui.ts → errors). */
+export function validateField(field: keyof BookingForm, raw: string, msg: ErrorMessages): string | undefined {
   const value = cleanText(raw)
   switch (field) {
     case 'name':
-      if (!value) return 'Informe seu nome.'
-      if (value !== sanitizePersonText(value, NAME_MAX)) return 'Use apenas letras, espaço, apóstrofo ou hífen.'
-      if (countLetters(value) < 3) return 'O nome precisa ter pelo menos 3 letras.'
-      if (value.length > NAME_MAX) return `Use no máximo ${NAME_MAX} caracteres.`
+      if (!value) return msg.nameRequired
+      if (value !== sanitizePersonText(value, NAME_MAX)) return msg.invalidChars
+      if (countLetters(value) < 3) return msg.nameShort
+      if (value.length > NAME_MAX) return msg.tooLong(NAME_MAX)
       return
     case 'date':
-      if (!value) return 'Escolha a data do casamento.'
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(Date.parse(value))) return 'Informe uma data válida.'
-      if (value < todayISO()) return 'A data não pode ser anterior a hoje.'
+      if (!value) return msg.dateRequired
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || Number.isNaN(Date.parse(value))) return msg.dateInvalid
+      if (value < todayISO()) return msg.datePast
       return
     case 'city':
-      if (!value) return 'Informe a cidade do evento.'
-      if (value !== sanitizePersonText(value, CITY_MAX)) return 'Use apenas letras, espaço, apóstrofo ou hífen.'
-      if (countLetters(value) < 2) return 'A cidade precisa ter pelo menos 2 letras.'
+      if (!value) return msg.cityRequired
+      if (value !== sanitizePersonText(value, CITY_MAX)) return msg.invalidChars
+      if (countLetters(value) < 2) return msg.cityShort
       return
     case 'attendance':
-      if (!value) return 'Selecione o tipo de atendimento.'
+      if (!value) return msg.attendanceRequired
       return
     case 'packageName':
-      if (!value) return 'Selecione um pacote (ou "ainda não decidi").'
+      if (!value) return msg.packageRequired
       return
     case 'notes':
-      if (value.length > NOTES_MAX) return `Use no máximo ${NOTES_MAX} caracteres.`
+      if (value.length > NOTES_MAX) return msg.tooLong(NOTES_MAX)
       return
   }
 }
 
-export function validateForm(form: BookingForm): BookingErrors {
+export function validateForm(form: BookingForm, msg: ErrorMessages): BookingErrors {
   const errors: BookingErrors = {}
   for (const field of Object.keys(form) as (keyof BookingForm)[]) {
-    const error = validateField(field, form[field])
+    const error = validateField(field, form[field], msg)
     if (error) errors[field] = error
   }
   return errors

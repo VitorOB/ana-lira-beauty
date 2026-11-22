@@ -1,8 +1,9 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import { SparkleIcon } from './ui/Icons'
 
 /** Faixa vinho levemente inclinada com palavras passando. */
 export default function Marquee() {
+  const { site } = useSite()
   const words = [...site.marquee, ...site.marquee]
   return (
     <div className="relative z-10 -my-4 overflow-hidden py-8" aria-label={site.marquee.join(', ')} role="img">

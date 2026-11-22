@@ -1,12 +1,11 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import { CheckIcon, SparkleIcon } from './ui/Icons'
 import Reveal from './ui/Reveal'
 import SectionHeading from './ui/SectionHeading'
 
-const { packages } = site
-
 export default function Packages() {
+  const { packages } = useSite().site
   return (
     <section id="pacotes" aria-labelledby="pacotes-title" className="px-3 py-10 sm:px-6 sm:py-16">
       <div className="mx-auto max-w-6xl rounded-section bg-blush px-5 py-16 sm:px-10 lg:px-14 lg:py-24">

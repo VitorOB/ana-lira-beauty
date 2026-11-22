@@ -11,15 +11,17 @@ import Portfolio from './components/Portfolio'
 import Testimonials from './components/Testimonials'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import { BookingProvider } from './context/BookingContext'
+import { useSite } from './i18n/lang'
 
 export default function App() {
+  const { t } = useSite()
   return (
     <BookingProvider>
       <a
         href="#conteudo"
         className="sr-only z-[80] rounded-full bg-wine px-5 py-3 text-on-wine focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
       >
-        Pular para o conteúdo
+        {t.skipLink}
       </a>
       <Header />
       <main id="conteudo" className="overflow-x-clip">

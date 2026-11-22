@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import { useBooking } from '../context/BookingContext'
 import { CloseIcon, MenuIcon } from './ui/Icons'
+import LanguageSwitch from './ui/LanguageSwitch'
 
 /** Menu em cápsula flutuante com fundo translúcido e blur. */
 export default function Header() {
   const { openBooking } = useBooking()
+  const { site, t } = useSite()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -26,7 +28,7 @@ export default function Header() {
   return (
     <header className="fixed inset-x-0 top-3 z-40 px-3 sm:top-5 sm:px-6">
       <nav
-        aria-label="Principal"
+        aria-label={t.mainNav}
         className={`mx-auto max-w-6xl rounded-[32px] border border-white/60 bg-cream/70 backdrop-blur-xl transition-shadow duration-300 supports-[backdrop-filter]:bg-cream/60 ${
           scrolled ? 'shadow-[0_18px_40px_-24px_rgba(42,21,24,0.45)]' : ''
         }`}
@@ -53,14 +55,15 @@ export default function Header() {
               aria-haspopup="dialog"
               className="hidden rounded-full bg-wine px-5 py-2.5 text-[15px] font-medium text-on-wine transition hover:bg-wine-dark sm:inline-flex"
             >
-              Consultar data
+              {t.checkDate}
             </button>
+            <LanguageSwitch />
             <button
               type="button"
               className="grid size-11 place-items-center rounded-full text-wine transition hover:bg-blush lg:hidden"
               aria-expanded={open}
               aria-controls="menu-mobile"
-              aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+              aria-label={open ? t.closeMenu : t.openMenu}
               onClick={() => setOpen((v) => !v)}
             >
               {open ? <CloseIcon className="size-6" /> : <MenuIcon className="size-6" />}
@@ -91,7 +94,7 @@ export default function Header() {
               }}
               className="mt-3 w-full rounded-full bg-wine px-5 py-3.5 font-medium text-on-wine"
             >
-              Consultar disponibilidade
+              {t.checkAvailability}
             </button>
           </div>
         )}

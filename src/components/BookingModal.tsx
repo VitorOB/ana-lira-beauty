@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import { useModalBehavior } from '../hooks/useModalBehavior'
 import {
   CITY_MAX,
@@ -20,7 +20,6 @@ interface BookingModalProps {
   onClose: () => void
 }
 
-const { form: copy, packages } = site
 const FIELD_ORDER: (keyof BookingForm)[] = ['name', 'date', 'city', 'attendance', 'packageName', 'notes']
 
 const inputBase =
@@ -29,6 +28,8 @@ const inputState = (hasError: boolean) =>
   hasError ? 'border-error ring-error/15 focus:border-error' : 'border-wine/15 ring-rose/60 focus:border-wine/50'
 
 export default function BookingModal({ initialPackageId, onClose }: BookingModalProps) {
+  const { lang, site, t } = useSite()
+  const { form: copy, packages } = site
   const dialogRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   useModalBehavior(dialogRef, onClose)
@@ -51,7 +52,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
   /** Atualiza o valor e limpa (ou atualiza) o erro assim que a pessoa corrige. */
   const update = (field: keyof BookingForm, value: string) => {
     setValues((v) => ({ ...v, [field]: value }))
-    if (errors[field]) setErrors((e) => ({ ...e, [field]: validateField(field, value) }))
+    if (errors[field]) setErrors((e) => ({ ...e, [field]: validateField(field, value, t.errors) }))
   }
 
   /** Nome e cidade: bloqueia números e símbolos já na digitação, mantendo o cursor no lugar. */
@@ -72,19 +73,19 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
 
   const onBlur = (field: keyof BookingForm) => () => {
     // Só valida ao sair do campo se a pessoa já escreveu algo
-    if (values[field]) setErrors((e) => ({ ...e, [field]: validateField(field, values[field]) }))
+    if (values[field]) setErrors((e) => ({ ...e, [field]: validateField(field, values[field], t.errors) }))
   }
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
-    const found = validateForm(values)
+    const found = validateForm(values, t.errors)
     setErrors(found)
     const firstInvalid = FIELD_ORDER.find((f) => found[f])
     if (firstInvalid) {
       formRef.current?.querySelector<HTMLElement>(`[data-field="${firstInvalid}"]`)?.focus()
       return
     }
-    const link = whatsappLink(buildBookingMessage(values))
+    const link = whatsappLink(buildBookingMessage(values, copy.messageIntro, t.message, lang))
     // (não usar "noopener" aqui: com ele o navegador sempre retorna null e não dá para saber se abriu)
     const win = window.open(link, '_blank')
     if (win) win.opener = null
@@ -114,7 +115,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
           type="button"
           onClick={onClose}
           className="absolute top-5 right-5 z-10 grid size-11 place-items-center rounded-full bg-blush text-wine transition hover:bg-rose"
-          aria-label="Fechar formulário"
+          aria-label={t.form.close}
         >
           <CloseIcon className="size-5" />
         </button>
@@ -137,10 +138,10 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
               className="mt-8 inline-flex items-center gap-2.5 rounded-full bg-whats px-7 py-4 font-medium text-white transition hover:bg-whats-dark"
             >
               <WhatsAppIcon className="size-5" />
-              Abrir o WhatsApp novamente
+              {t.form.reopen}
             </a>
             <button type="button" onClick={onClose} className="mt-4 block w-full text-[15px] font-medium text-wine underline underline-offset-4">
-              Voltar ao site
+              {t.form.back}
             </button>
           </div>
         ) : (
@@ -153,7 +154,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
             </p>
 
             <div className="mt-7 grid gap-5">
-              <Field id={fid('name')} label="Nome" required error={errors.name}>
+              <Field id={fid('name')} label={t.form.name} optionalLabel={t.form.optional} required error={errors.name}>
                 <input
                   id={fid('name')}
                   data-field="name"
@@ -163,7 +164,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                   autoComplete="name"
                   autoCapitalize="words"
                   maxLength={NAME_MAX}
-                  placeholder="Seu nome completo"
+                  placeholder={t.form.namePlaceholder}
                   value={values.name}
                   onChange={onPersonText('name', NAME_MAX)}
                   onBlur={onBlur('name')}
@@ -173,7 +174,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
               </Field>
 
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field id={fid('date')} label="Data do casamento" required error={errors.date}>
+                <Field id={fid('date')} label={t.form.date} optionalLabel={t.form.optional} required error={errors.date}>
                   <input
                     id={fid('date')}
                     data-field="date"
@@ -188,7 +189,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                   />
                 </Field>
 
-                <Field id={fid('city')} label="Cidade do evento" required error={errors.city}>
+                <Field id={fid('city')} label={t.form.city} optionalLabel={t.form.optional} required error={errors.city}>
                   <input
                     id={fid('city')}
                     data-field="city"
@@ -197,7 +198,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                     autoComplete="address-level2"
                     autoCapitalize="words"
                     maxLength={CITY_MAX}
-                    placeholder={`Ex.: ${site.location.city}`}
+                    placeholder={t.form.cityPlaceholder(site.location.city)}
                     value={values.city}
                     onChange={onPersonText('city', CITY_MAX)}
                     onBlur={onBlur('city')}
@@ -209,7 +210,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
 
               <fieldset {...errorProps('attendance')}>
                 <legend className="mb-2 text-[15px] font-medium text-ink">
-                  Tipo de atendimento <span className="text-wine">*</span>
+                  {t.form.attendance} <span className="text-wine">*</span>
                 </legend>
                 <div className="flex flex-wrap gap-2">
                   {copy.attendanceTypes.map((type, i) => {
@@ -242,7 +243,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                 <ErrorMessage id={fid('attendance-error')} message={errors.attendance} />
               </fieldset>
 
-              <Field id={fid('package')} label="Pacote de interesse" required error={errors.packageName} errorId={fid('packageName-error')}>
+              <Field id={fid('package')} label={t.form.package} optionalLabel={t.form.optional} required error={errors.packageName} errorId={fid('packageName-error')}>
                 <select
                   id={fid('package')}
                   data-field="packageName"
@@ -253,7 +254,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                   {...errorProps('packageName')}
                 >
                   <option value="" disabled>
-                    Selecione um pacote
+                    {t.form.selectPackage}
                   </option>
                   {packages.items.map((p) => (
                     <option key={p.id} value={p.name}>
@@ -264,14 +265,14 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
                 </select>
               </Field>
 
-              <Field id={fid('notes')} label="Observações" optional error={errors.notes}>
+              <Field id={fid('notes')} label={t.form.notes} optionalLabel={t.form.optional} optional error={errors.notes}>
                 <textarea
                   id={fid('notes')}
                   data-field="notes"
                   name="notes"
                   rows={3}
                   maxLength={NOTES_MAX}
-                  placeholder="Horário da cerimônia, número de madrinhas, local do making of..."
+                  placeholder={t.form.notesPlaceholder}
                   value={values.notes}
                   onChange={(e) => update('notes', e.target.value)}
                   className={`${inputBase} ${inputState(Boolean(errors.notes))} resize-none`}
@@ -287,7 +288,7 @@ export default function BookingModal({ initialPackageId, onClose }: BookingModal
               <WhatsAppIcon className="size-5" />
               {copy.submitLabel}
             </button>
-            <p className="mt-4 text-center text-sm text-muted">Seus dados são usados apenas para responder à sua consulta.</p>
+            <p className="mt-4 text-center text-sm text-muted">{t.form.privacy}</p>
           </form>
         )}
       </div>
@@ -309,6 +310,8 @@ function ErrorMessage({ id, message }: { id: string; message?: string }) {
 interface FieldProps {
   id: string
   label: string
+  /** Texto "(opcional)" no idioma atual. */
+  optionalLabel: string
   required?: boolean
   optional?: boolean
   error?: string
@@ -316,14 +319,14 @@ interface FieldProps {
   children: ReactNode
 }
 
-function Field({ id, label, required, optional, error, errorId, children }: FieldProps) {
+function Field({ id, label, optionalLabel, required, optional, error, errorId, children }: FieldProps) {
   // o id do erro segue o padrão "<id-do-formulário>-<campo>-error"
   const resolvedErrorId = errorId ?? `${id}-error`
   return (
     <div>
       <label htmlFor={id} className="mb-2 block text-[15px] font-medium text-ink">
         {label} {required && <span className="text-wine">*</span>}
-        {optional && <span className="font-normal text-muted">(opcional)</span>}
+        {optional && <span className="font-normal text-muted">{optionalLabel}</span>}
       </label>
       {children}
       <ErrorMessage id={resolvedErrorId} message={error} />

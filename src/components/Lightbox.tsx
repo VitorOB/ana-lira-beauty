@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { PortfolioItem } from '../config/types'
 import { useModalBehavior } from '../hooks/useModalBehavior'
+import { useSite } from '../i18n/lang'
 import { ArrowIcon, CloseIcon } from './ui/Icons'
 import Img from './ui/Img'
 
@@ -14,6 +15,7 @@ interface LightboxProps {
 export default function Lightbox({ items, index, onChange, onClose }: LightboxProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
   useModalBehavior(dialogRef, onClose)
+  const { t } = useSite()
 
   const item = items[index]
   const prev = () => onChange((index - 1 + items.length) % items.length)
@@ -34,7 +36,7 @@ export default function Lightbox({ items, index, onChange, onClose }: LightboxPr
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={`Foto ${index + 1} de ${items.length}: ${item.alt}`}
+        aria-label={t.photoOf(index + 1, items.length, item.alt)}
         className="animate-slide-up relative flex max-h-full w-full max-w-3xl flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
@@ -42,7 +44,7 @@ export default function Lightbox({ items, index, onChange, onClose }: LightboxPr
           type="button"
           onClick={onClose}
           className="absolute -top-1 right-0 z-10 grid size-11 place-items-center rounded-full bg-cream text-wine shadow-lg transition hover:bg-white sm:-right-14"
-          aria-label="Fechar foto"
+          aria-label={t.closePhoto}
         >
           <CloseIcon className="size-5" />
         </button>
@@ -64,13 +66,13 @@ export default function Lightbox({ items, index, onChange, onClose }: LightboxPr
         </figure>
 
         <div className="mt-4 flex items-center gap-3">
-          <button type="button" onClick={prev} className="grid size-12 place-items-center rounded-full bg-cream text-wine transition hover:bg-white" aria-label="Foto anterior">
+          <button type="button" onClick={prev} className="grid size-12 place-items-center rounded-full bg-cream text-wine transition hover:bg-white" aria-label={t.prevPhoto}>
             <ArrowIcon direction="left" className="size-5" />
           </button>
           <span className="min-w-16 text-center text-sm text-on-wine" aria-live="polite">
             {index + 1} / {items.length}
           </span>
-          <button type="button" onClick={next} className="grid size-12 place-items-center rounded-full bg-cream text-wine transition hover:bg-white" aria-label="Próxima foto">
+          <button type="button" onClick={next} className="grid size-12 place-items-center rounded-full bg-cream text-wine transition hover:bg-white" aria-label={t.nextPhoto}>
             <ArrowIcon className="size-5" />
           </button>
         </div>

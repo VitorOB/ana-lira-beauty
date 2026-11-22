@@ -1,11 +1,10 @@
-import { site } from '../config/site'
+import { useSite } from '../i18n/lang'
 import BookingButton from './ui/BookingButton'
 import Reveal from './ui/Reveal'
 import RichText from './ui/RichText'
 
-const { finalCta } = site
-
 export default function FinalCta() {
+  const { finalCta } = useSite().site
   return (
     <section aria-labelledby="final-title" className="relative mt-10">
       {/* Onda antes da chamada final */}
